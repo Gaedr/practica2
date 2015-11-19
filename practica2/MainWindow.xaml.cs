@@ -20,6 +20,8 @@ namespace practica2 {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
+            Jugador j = new Jugador(Jugador.Side.Player1);
+            j.initiatePosition(GameCanvas.Width, GameCanvas.Height);
         }
     }
 }
