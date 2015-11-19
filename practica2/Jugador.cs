@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -75,12 +74,12 @@ namespace practica2 {
             //Coloreamos según el jugador que sea
             switch (side) {
                 case Side.Player1:
-                mark.Fill = new SolidColorBrush(Colors.Blue);
-                paddle.Fill = new SolidColorBrush(Colors.Blue);
+                mark.Fill = new SolidColorBrush(Utilities.PLAYER1_COLOR);
+                paddle.Fill = new SolidColorBrush(Utilities.PLAYER1_COLOR);
                 break;
                 case Side.Player2:
-                mark.Fill = new SolidColorBrush(Colors.Red);
-                paddle.Fill = new SolidColorBrush(Colors.Red);
+                mark.Fill = new SolidColorBrush(Utilities.PLAYER2_COLOR);
+                paddle.Fill = new SolidColorBrush(Utilities.PLAYER2_COLOR);
                 break;
             }
            

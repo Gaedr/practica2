@@ -93,7 +93,8 @@ namespace practica2 {
         /// </summary>
         /// <param name="cant"></param>
         private void increaseSpeed(double cant = .5) {
-            speed += cant;
+            if (speed < Utilities.BALL_MAX_SPEED)
+                speed += cant;
         }
 
         /// <summary>
