@@ -13,7 +13,7 @@ namespace practica2 {
         /// <summary>
         /// <see cref="Ellipse"/> que representa la pelota
         /// </summary>
-        private Ellipse ball;
+        private Ellipse shape;
 
         /// <summary>
         /// Posición de la pelota
@@ -34,16 +34,16 @@ namespace practica2 {
         /// Constructor del objeto pelota
         /// </summary>
         public Pelota() {
-            ball = new Ellipse();
+            shape = new Ellipse();
             position = new Point();
             fwd = new Vector();
             rand = new Random();
 
-            ball.Height = Utilities.BALL_RADIUS;
-            ball.Width = Utilities.BALL_RADIUS;
-            ball.Stroke = new SolidColorBrush(Colors.Black);
-            ball.StrokeThickness = 2;
-            ball.Fill = new SolidColorBrush(Colors.Green);
+            shape.Height = Utilities.BALL_RADIUS;
+            shape.Width = Utilities.BALL_RADIUS;
+            shape.Stroke = new SolidColorBrush(Colors.White);
+            shape.StrokeThickness = 2;
+            shape.Fill = new SolidColorBrush(Colors.Green);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace practica2 {
             position = new Point(canvasWidth / 2 - Utilities.BALL_RADIUS, canvasHeight / 2 - Utilities.BALL_RADIUS / 2);
             speed = Utilities.BALL_SPEED;
 
-            double angle = (rand.NextDouble() > .5 ? 1 : -1) * rand.NextDouble() * 90 + 45;
+            double angle = (rand.NextDouble() > .5 ? 1 : -1) * ((rand.NextDouble() * 90) + 45);
             fwd = new Vector(Math.Sin(Utilities.degreeToRadians(angle)), Math.Cos(Utilities.degreeToRadians(angle)));
         }
 
@@ -81,10 +81,8 @@ namespace practica2 {
         /// <param name="player">Jugador contra el que choca</param>
         /// <param name="canvasHeight">Altura del canvas</param>
         public void bounceBallHorizontal(Jugador player, double canvasHeight) {
-            position.X = player.getPosition().X + Utilities.PADDLE_WIDTH + (player.getSide() == Jugador.Side.Player1 ? 3 : -3);
-            fwd.Y = ((player.getPosition().Y - player.getPaddlePositionPast().Y) / canvasHeight) * 2;
-
-            fwd.X = -fwd.X;
+            fwd.Y = ((player.getPlayerPosition().Y - player.getPaddlePositionPast().Y) / canvasHeight) * 2;
+            fwd.X *= -1;            
             increaseSpeed();
         }
 
@@ -111,6 +109,14 @@ namespace practica2 {
         /// <returns></returns>
         public Vector getForward() {
             return fwd;
+        }
+
+        /// <summary>
+        /// Devuelve un <see cref="Ellipse"/> que representa la pelota
+        /// </summary>
+        /// <returns></returns>
+        public Ellipse getShape() {
+            return shape;
         }
     }
 }
