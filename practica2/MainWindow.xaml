@@ -1,17 +1,19 @@
 ﻿<Window x:Class="practica2.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="600" Width="900" Closing="MainWindow_Closing" Background="White">
+        Title="KPong" Height="600" Width="910" Closing="MainWindow_Closing" Background="White">
     <Grid Background="#FFFFFAFF">
-        <Rectangle Name="rectangle1" Stroke="Black" Canvas.Left="-8" Canvas.Top="-7" Fill="Black" Margin="0,0,-0.4,0.4" />
-        <Rectangle Height="480" Name="rectangle2" Stroke="Black" Fill="White" Canvas.Left="0" Canvas.Top="0" Margin="10,16,18.6,74.4" />
-        <Image Height="480" Name="SkeletonImage" Stretch="Fill" Margin="10,16,18.6,74.4" Opacity="0.5" />
-        <Canvas Height="480" HorizontalAlignment="Left" Name="GameCanvas" VerticalAlignment="Top" Width="640" Margin="227,11,0,0" ClipToBounds="True">
-
-        </Canvas>
-        <Label Content="Player One" Height="28" HorizontalAlignment="Left" Margin="111,497,0,0" Name="label2" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Foreground="White" />
-        <Label Content="Player Two" FontSize="14" FontWeight="Bold" Height="28" HorizontalAlignment="Right" Margin="0,498,119,0" Name="label3" VerticalAlignment="Top" Foreground="White" />
-        <Label Content="0" Height="40" HorizontalAlignment="Left" Margin="111,520,0,0" VerticalAlignment="Top" FontSize="18" Name="scoreOneLabel" Width="81" HorizontalContentAlignment="Center" Foreground="White" />
-        <Label Content="0" FontSize="18" Height="40" HorizontalAlignment="Left" Margin="676,521,0,0" Name="scoreTwoLabel" VerticalAlignment="Top" Width="83" HorizontalContentAlignment="Center" Foreground="White" />
+        <Rectangle Stroke="Black" Canvas.Left="-8" Canvas.Top="-7" Fill="Black" Margin="0,0,-0.4,0.4" />
+        <Grid Margin="10,10,10,0" VerticalAlignment="Top">
+            <Image Height="480" x:Name="SkeletonImage" Stretch="Fill" Margin="0" Opacity="0.5" HorizontalAlignment="Center" />
+            <Rectangle x:Name="rectangle2" Stroke="White" Fill="Black"  Height="480" Width="874" Margin="0"/>
+            <Canvas Height="480" x:Name="GameCanvas" Width="874" ClipToBounds="True"/>
+            <Label x:Name="gameLabel" Content="Presiona Iniciar para comenzar" HorizontalAlignment="Center" Margin="0,0,0,30" VerticalAlignment="Center" Height="56" Width="639" Foreground="White" HorizontalContentAlignment="Center" FontSize="21.333" FontFamily="Super Retro M54"/>
+        </Grid>
+        <Grid Margin="10,0,10,10" VerticalAlignment="Bottom">
+            <Label Content="0" Height="59" HorizontalAlignment="Left" Margin="40,0,0,0" VerticalAlignment="Center" FontSize="32" x:Name="scoreOneLabel" Width="81" HorizontalContentAlignment="Center" Foreground="White" FontFamily="Super Retro M54" FontStyle="Italic" />
+            <Label Content="0" FontSize="32" Height="59" HorizontalAlignment="Right" Margin="0,0,40,0" x:Name="scoreTwoLabel" VerticalAlignment="Center" Width="83" HorizontalContentAlignment="Center" Foreground="White" FontFamily="Super Retro M54" FontStyle="Italic" />
+            <Button x:Name="startGameButton" Content="Iniciar" HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Center" Width="100" FontSize="14.667" Height="41" Background="Green" Foreground="White" Click="startGameButton_Click" FontFamily="Super Retro M54" TextOptions.TextFormattingMode="Display"/>
+        </Grid>
     </Grid>
 </Window>

@@ -13,7 +13,7 @@ namespace practica2 {
         /// <summary>
         /// Rectangulo que representa la barra
         /// </summary>
-        private Rectangle paddle;
+        private Rectangle shape;
 
         /// <summary>
         /// Posición de la barra
@@ -35,7 +35,6 @@ namespace practica2 {
         /// </summary>
         private Ellipse mark;
 
-
         /// <summary>
         /// Puntuación del jugador
         /// </summary>
@@ -45,7 +44,6 @@ namespace practica2 {
         /// Contiene el número del jugador
         /// </summary>
         private Side side;
-
 
         /// <summary>
         /// Inicializa el Jugador a partir de su <see cref="Side"/>
@@ -65,24 +63,23 @@ namespace practica2 {
             mark.Height = Utilities.PLAYER_ELLIPSE_RADIUS;
 
             //Creamos la barra del jugador
-            paddle = new Rectangle();
-            paddle.Width = Utilities.PADDLE_WIDTH;
-            paddle.Height = Utilities.PADDLE_HEIGHT; ;
-            paddle.Stroke = new SolidColorBrush(Colors.Black);
-            paddle.StrokeThickness = 2;
+            shape = new Rectangle();
+            shape.Width = Utilities.PADDLE_WIDTH;
+            shape.Height = Utilities.PADDLE_HEIGHT; ;
+            shape.Stroke = new SolidColorBrush(Colors.White);
+            shape.StrokeThickness = 2;
 
             //Coloreamos según el jugador que sea
             switch (side) {
                 case Side.Player1:
                 mark.Fill = new SolidColorBrush(Utilities.PLAYER1_COLOR);
-                paddle.Fill = new SolidColorBrush(Utilities.PLAYER1_COLOR);
+                shape.Fill = new SolidColorBrush(Utilities.PLAYER1_COLOR);
                 break;
                 case Side.Player2:
                 mark.Fill = new SolidColorBrush(Utilities.PLAYER2_COLOR);
-                paddle.Fill = new SolidColorBrush(Utilities.PLAYER2_COLOR);
+                shape.Fill = new SolidColorBrush(Utilities.PLAYER2_COLOR);
                 break;
-            }
-           
+            }           
         }
         
         /// <summary>
@@ -96,11 +93,12 @@ namespace practica2 {
                 paddlePosition.X = Utilities.MARGIN_OFFSET;
                 break;
                 case Side.Player2:
-                paddlePosition.X = canvasWidth - paddle.Width - Utilities.MARGIN_OFFSET;
+                paddlePosition.X = canvasWidth - Utilities.PADDLE_WIDTH - Utilities.MARGIN_OFFSET;
                 break;
             }
             paddlePosition.Y = canvasHeight / 2 - Utilities.PADDLE_HEIGHT / 2;
             paddlePositionPast = paddlePosition;
+            position = paddlePosition;
         }
 
 
@@ -111,10 +109,10 @@ namespace practica2 {
         /// <param name="positionHand">Coordenadas de la mano</param>
         public void updatePosition(Point positionHead, Point positionHand) {
             paddlePositionPast = paddlePosition;
-            paddlePosition.Y = positionHand.Y - paddle.Height / 2;
+            paddlePosition.Y = positionHand.Y - Utilities.PADDLE_HEIGHT / 2;
 
-            position.X = positionHead.X - mark.Width / 2;
-            position.Y = positionHead.Y - mark.Height / 2;
+            position.X = positionHead.X - Utilities.PLAYER_ELLIPSE_RADIUS / 2;
+            position.Y = positionHead.Y - Utilities.PLAYER_ELLIPSE_RADIUS / 2;
         }
 
 
@@ -122,16 +120,23 @@ namespace practica2 {
         /// Devuelve un <see cref="Ellipse"/> posicionado en las coordenadas del jugador
         /// </summary>
         /// <returns>Elipse con la posición del jugador</returns>
-        public Ellipse getMark() {
+        public Ellipse getMarkShape() {
             return mark;
         }
 
+        /// <summary>
+        /// Devuelve un <see cref="Rectangle"/> que representa la pala del Jugador
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle getPaddleShape() {
+            return shape;
+        }
 
         /// <summary>
         /// Devuelve un <see cref="Point"/> con la posición del jugador
         /// </summary>
         /// <returns></returns>
-        public Point getPosition() {
+        public Point getPlayerPosition() {
             return position;
         }
 
