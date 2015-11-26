@@ -21,6 +21,7 @@ namespace practica2 {
         public const double BALL_MAX_SPEED = 15;
         public const int WIN_SCORE = 10;
         public const JointType HANDTRACK = JointType.HandRight;
+        public const int COUNTDOWN = 3;
 
         public static double degreeToRadians(double deg) {
             return deg * DEG_TO_RAD;

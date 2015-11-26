@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Kinect;
+using System;
 using System.Threading;
 using System.Timers;
 using System.Windows;
@@ -14,14 +15,31 @@ namespace practica2 {
         private bool gameStarted = false;
         private bool gamePaused = false;
         private bool newGame = true;
+        private bool kinectEnabled = false;
         private System.Timers.Timer newBallTimer;
-        private int countdown = 3;
+        private int countdown = Utilities.COUNTDOWN;
+        private KinectUtilities helper;
 
         private Jugador playerOne, playerTwo;
         private Pelota ball;
 
         public MainWindow() {
             InitializeComponent();
+            helper = new KinectUtilities();
+            helper.ToggleSeatedMode(true);
+            helper.SkeletonDataChanged += this.SkeletonDataChanged;
+            SkeletonImage.Source =  helper.getSkeletonImage();
+            testKinect();
+        }
+
+        private void testKinect() {
+            if (!helper.isKinectConnected()) {
+                gameLabel.Content = "kinect no conectado";
+                startGameButton.IsEnabled = false;                
+                kinectEnabled = false;
+            } else {
+                kinectEnabled = true;
+            }
         }
 
         private void initializeGame() {
@@ -58,7 +76,7 @@ namespace practica2 {
             // Pause the game
             gamePaused = true;
             // Start the countdown timer
-            countdown = 3;
+            countdown = Utilities.COUNTDOWN;
             gameLabel.Content = countdown;
             newBallTimer.Start();
         }
@@ -77,7 +95,9 @@ namespace practica2 {
 
         private void GameLoop() {
             while (true) {
-                if (!gamePaused && gameStarted) {
+                testKinect();
+                    
+                if (!gamePaused && gameStarted && kinectEnabled) {
                     Thread.Sleep(1000 / Utilities.FRAME_RATE);
                     this.Dispatcher.Invoke((Action)(() => {
                         Update();
@@ -147,17 +167,7 @@ namespace practica2 {
                 if (ball.getPosition().Y < (rival.getPaddlePosition().Y + Utilities.PADDLE_HEIGHT + (Utilities.BALL_RADIUS / 2)) &&
                     ball.getPosition().Y > (rival.getPaddlePosition().Y - (Utilities.BALL_RADIUS / 2))) {
                     ball.bounceBallHorizontal(rival, GameCanvas.Height);
-                    //Console.WriteLine("Posición Balón: ["+ball.getPosition().X +", "+ball.getPosition().Y+"]");
-                    //Console.WriteLine("Posición Barra: [" + rival.getPaddlePosition().X + ", " + rival.getPaddlePosition().Y + "]");
-                    //Console.WriteLine("Posición Jugador: [" + rival.getPlayerPosition().X + ", " + rival.getPlayerPosition().Y + "]");
-                    //Console.WriteLine("Canvas| Altura: " + GameCanvas.Height + " / Anchura: " + GameCanvas.Width );
-                    Console.WriteLine("Rebote");
                 } else if(isScore){
-                    //Console.WriteLine("Posición Balón: [" + ball.getPosition().X + ", " + ball.getPosition().Y + "]");
-                    //Console.WriteLine("Posición Jugador: [" + rival.getPlayerPosition().X + ", " + rival.getPlayerPosition().Y + "]");
-                    //Console.WriteLine("Posición Jugador: [" + rival.getPlayerPosition().X + ", " + rival.getPlayerPosition().Y + "]");
-                    //Console.WriteLine("Canvas| Altura: " + GameCanvas.Height + " / Anchura: " + GameCanvas.Width);
-                    Console.WriteLine("Gol!");
                     return true;
                 }
             }
@@ -188,6 +198,7 @@ namespace practica2 {
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
             if (gameThread != null) {
                 gameThread.Abort();
+                helper.closeKinect();
             }
         }
 
@@ -219,6 +230,72 @@ namespace practica2 {
                 startGameButton.Background = new SolidColorBrush(Colors.Green);
                 startGameButton.Content = "Iniciar";
             }
+        }
+
+        private void SkeletonDataChanged(object sender, KinectUtilities.SkeletonDataChangeEventArgs e) {
+            // Don't update if the game hasn't started
+            if (gameThread == null)
+                return;
+
+            // Determine which skeletons are on which side
+            Skeleton right = null;
+            Skeleton left = null;
+            // Loop through all available skeletons
+            for (int i = 0; i < e.skeletons.Length; i++) {
+                // Grab the current skeleton
+                Skeleton skel = e.skeletons[i];
+                // If we're tracked figure out what side of the screen we're on
+                if (skel.TrackingState == SkeletonTrackingState.Tracked) {
+                    Point position = helper.SkeletonPointToScreen(skel.Joints[JointType.ShoulderCenter].Position);
+                    // If the skeleton is the first on the left side of the screen, it is the left skeleton
+                    if ((position.X > 0 && position.X <= GameCanvas.Width / 2) && left == null)
+                        left = skel;
+                    // If the skeleton is the first on the right side of the screen, it is the right skeleton
+                    else if ((position.X > GameCanvas.Width / 2 && position.X < GameCanvas.Width) && right == null)
+                        right = skel;
+                }
+                // If both skeletons have been found, no need to keep looking
+                if (left != null & right != null)
+                    break;
+            }
+
+            // If the left skeleton wasn't found, hide the marker
+            if (left == null) {
+                playerOne.setVisibility(false);
+                Console.WriteLine("No hay jugador 1");
+            // If the left skeleton was found, update some values
+            } else {
+                Console.WriteLine("Jugador 1 conectado");
+                // Get the locations of the skeleton's head and hand
+                Point playerOneHand = helper.SkeletonPointToScreen(left.Joints[Utilities.HANDTRACK].Position);
+                Point playerOneHead = helper.SkeletonPointToScreen(left.Joints[JointType.Head].Position);
+                // Save the last position of player one's paddle
+                playerOne.updatePosition(playerOneHead, playerOneHand);
+            }
+
+            // If the right skeleton wasn't found, hide the marker
+            if (right == null) {
+                playerTwo.setVisibility(false);
+                Console.WriteLine("No hay jugador 2");
+                // If the right skeleton was found, update some values
+            } else {
+                // Get the locations of the skeleton's head and hand
+                Console.WriteLine("Jugador 2 conectado");
+                Point playerTwoHand = helper.SkeletonPointToScreen(right.Joints[Utilities.HANDTRACK].Position);
+                Point playerTwoHead = helper.SkeletonPointToScreen(right.Joints[JointType.Head].Position);
+                // Save the last position of player two's paddle
+                playerTwo.updatePosition(playerTwoHead, playerTwoHand);
+            }
+
+            // Draw the markers separately from the rest of the game
+            // TO-DO: Move this somewhere better
+            this.Dispatcher.Invoke((Action)(() => {
+                // Move the markers to their new positions
+                Canvas.SetLeft(playerOne.getMarkShape(), playerOne.getPlayerPosition().X);
+                Canvas.SetTop(playerOne.getMarkShape(), playerOne.getPlayerPosition().Y);
+                Canvas.SetLeft(playerTwo.getMarkShape(), playerTwo.getPlayerPosition().X);
+                Canvas.SetTop(playerTwo.getMarkShape(), playerTwo.getPlayerPosition().Y);
+            }));
         }
     }
 }

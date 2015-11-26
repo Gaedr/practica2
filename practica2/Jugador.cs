@@ -115,7 +115,6 @@ namespace practica2 {
             position.Y = positionHead.Y - Utilities.PLAYER_ELLIPSE_RADIUS / 2;
         }
 
-
         /// <summary>
         /// Devuelve un <see cref="Ellipse"/> posicionado en las coordenadas del jugador
         /// </summary>
@@ -179,6 +178,15 @@ namespace practica2 {
         /// <returns></returns>
         public Side getSide() {
             return side;
+        }
+
+        public void setVisibility(bool visibility) {
+            if (visibility) {
+                mark.Opacity = 1;
+            } else {
+                mark.Opacity = 0;
+            }
+            
         }
     }
 }

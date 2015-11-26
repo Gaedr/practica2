@@ -5,12 +5,12 @@
     <Grid Background="#FFFFFAFF">
         <Rectangle Stroke="Black" Canvas.Left="-8" Canvas.Top="-7" Fill="Black" Margin="0,0,-0.4,0.4" />
         <Grid Margin="10,10,10,0" VerticalAlignment="Top">
-            <Image Height="480" x:Name="SkeletonImage" Stretch="Fill" Margin="0" Opacity="0.5" HorizontalAlignment="Center" />
             <Rectangle x:Name="rectangle2" Stroke="White" Fill="Black"  Height="480" Width="874" Margin="0"/>
+            <Image Height="480" x:Name="SkeletonImage" Stretch="Fill" Margin="0" Opacity="0.5" HorizontalAlignment="Center" />
             <Canvas Height="480" x:Name="GameCanvas" Width="874" ClipToBounds="True"/>
-            <Label x:Name="gameLabel" Content="Presiona Iniciar para comenzar" HorizontalAlignment="Center" Margin="0,0,0,30" VerticalAlignment="Center" Height="56" Width="639" Foreground="White" HorizontalContentAlignment="Center" FontSize="21.333" FontFamily="Super Retro M54"/>
+            <Label x:Name="gameLabel" Content="Presiona Iniciar para comenzar " HorizontalAlignment="Center" Margin="0,0,0,30" VerticalAlignment="Center" Height="56" Width="639" Foreground="White" HorizontalContentAlignment="Center" FontSize="21.333" FontFamily="Super Retro M54"/>
         </Grid>
-        <Grid Margin="10,0,10,10" VerticalAlignment="Bottom">
+        <Grid x:Name="GridInfo" Margin="10,0,10,10" VerticalAlignment="Bottom">
             <Label Content="0" Height="59" HorizontalAlignment="Left" Margin="40,0,0,0" VerticalAlignment="Center" FontSize="32" x:Name="scoreOneLabel" Width="81" HorizontalContentAlignment="Center" Foreground="White" FontFamily="Super Retro M54" FontStyle="Italic" />
             <Label Content="0" FontSize="32" Height="59" HorizontalAlignment="Right" Margin="0,0,40,0" x:Name="scoreTwoLabel" VerticalAlignment="Center" Width="83" HorizontalContentAlignment="Center" Foreground="White" FontFamily="Super Retro M54" FontStyle="Italic" />
             <Button x:Name="startGameButton" Content="Iniciar" HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Center" Width="100" FontSize="14.667" Height="41" Background="Green" Foreground="White" Click="startGameButton_Click" FontFamily="Super Retro M54" TextOptions.TextFormattingMode="Display"/>
