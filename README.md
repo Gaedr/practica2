@@ -27,6 +27,14 @@ Para el desarrollo de esta práctica se han creado una serie de clases entre las
 	* **bounceBallHorizontal(Jugador player, double canvasHeight) ** método con el que controlamos el rebote horizontal de la pelota, esto ocurre cuando choca contra las barras de cada jugador y es algo más complejo ya que actualiza el valor de la posicion y de **fwd** a partir de la posición y del jugador y de su pala, mientras que el valor de la coordenada x de **fwd** se actualiza a -1 y se aumenta la velocidad.
 	* **increaseSpeed(double cant = .5)** con este método nos limitamos a aumentar el valor de la velocidad a la que se mueve la pelota en 0.5.
 	* En los métodos restantes nos limitamos a acceder a las variables privadas de la clase.
+
+* La clase **MainWindow** se encarga de todo lo relacionado con la ventana que va a ver el usuario a la hora de jugar al pong, por lo que es la encargada de mostrar todos los componentes necesarios, asi como un marcador o si está conectado o no el Kinect. Dentro de esta clase encontramos los siguientes métodos.
+	* **MainWindow()**, este es el constructor por defecto de la clase y se escarga de inicializar los componentes, tomar los esqueletos de los jugadores para identificarlos y llama a un método que comprueba si está conectado o no el Kinect.
+	* **testKinect()** es método comprueba si el Kinect está conectado, en caso de  no estarlo muestra un mensaje por pantalla indicándolo y desactiva el botón con el que poder iniciar el juego hasta que esté conectado.
+	* **initializeGame()** en este método inicializamos un timer, establecemos un valor de cuenta atrás, establecemos los lados de en los que se situarán los jugadores, creamos la pelota, las palas de cada uno, y finalmente damos paso al método que ejecuta el juego.
+	* **NewRound()** en este método partimos de que el juego está pausado, muestra la cuenta atrás que indica el inicio del juego 
+
+
 ###Funcionamiento.
 ### Errores y aspectos destacados.
 
