@@ -82,10 +82,15 @@ namespace practica2 {
         /// Intermediate storage for the color data received from the camera
         /// </summary>
         private byte[] colorPixels;
-
+        
+        /// <summary>
+        /// Nuevo método delegado que se ejecutará cuando se mueva el esqueleto
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public delegate void SkeletonDataChangedEvent(object sender, SkeletonDataChangeEventArgs e); // Skeleton data change event
 
-        public SkeletonDataChangedEvent SkeletonDataChanged; // Skeleton data change
+        public SkeletonDataChangedEvent SkeletonDataChanged; 
         protected virtual void SkeletonDataChange(SkeletonDataChangeEventArgs e) {
             if (SkeletonDataChanged != null) {
                 SkeletonDataChanged(this, e);
@@ -265,9 +270,9 @@ namespace practica2 {
             return this.sensor != null;
         }
 
-        /*
-     *  SkeletonDataChangeEventArgs - Information for custom event fired when SkeletonStream data changes
-     */
+        /// <summary>
+        /// Información del disparador del evento de los cambios del esqueleto
+        /// </summary>
         public class SkeletonDataChangeEventArgs {
             public readonly Skeleton[] skeletons;
 

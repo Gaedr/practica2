@@ -25,13 +25,21 @@ namespace practica2 {
 
         public MainWindow() {
             InitializeComponent();
+            // Creamos un nuevo objeto de Kinect
             helper = new KinectUtilities();
             helper.ToggleSeatedMode(true);
+
+            // Asignamos a la clase el método a ejecutar en cada cambio del esqueleto del jugador
             helper.SkeletonDataChanged += this.SkeletonDataChanged;
             SkeletonImage.Source =  helper.getSkeletonImage();
+
+            // Comprobamos que el Kinect esté conectado
             testKinect();
         }
 
+        /// <summary>
+        /// Función que comprueba si el Kinect está conectado
+        /// </summary>
         private void testKinect() {
             if (!helper.isKinectConnected()) {
                 gameLabel.Content = "kinect no conectado";
@@ -42,6 +50,9 @@ namespace practica2 {
             }
         }
 
+        /// <summary>
+        /// Función que inicializa las variables del juego
+        /// </summary>
         private void initializeGame() {
             GameCanvas.Children.Clear();
             newBallTimer = new System.Timers.Timer();
@@ -75,27 +86,34 @@ namespace practica2 {
             gameThread.IsBackground = true;
         }
 
+        /// <summary>
+        /// Función de nueva ronda, inicia el contador y pone en pausa el juego hasta que se inicia
+        /// </summary>
         private void NewRound() {
-            // Pause the game
+            // Pausamos el juego
             gamePaused = true;
-            // Start the countdown timer
+            // Iniciamos el contador
             countdown = Utilities.COUNTDOWN;
             gameLabel.Content = countdown;
             newBallTimer.Start();
         }
 
+        /// <summary>
+        /// Función de dibujado de los elementos
+        /// </summary>
         private void Draw() {
-            // Move the paddles to their new positions
             Canvas.SetLeft(playerOne.getPaddleShape(), playerOne.getPaddlePosition().X);
             Canvas.SetTop(playerOne.getPaddleShape(), playerOne.getPaddlePosition().Y);
             Canvas.SetLeft(playerTwo.getPaddleShape(), playerTwo.getPaddlePosition().X);
             Canvas.SetTop(playerTwo.getPaddleShape(), playerTwo.getPaddlePosition().Y);
-
-            // Move the ball to its new position
+            
             Canvas.SetLeft(ball.getShape(), ball.getPosition().X);
             Canvas.SetTop(ball.getShape(), ball.getPosition().Y);
         }
 
+        /// <summary>
+        /// Función que maneja la hebra del juego
+        /// </summary>
         private void GameLoop() {
             while (true) {
                 testKinect();
@@ -110,22 +128,26 @@ namespace practica2 {
             }
         }
 
+        /// <summary>
+        /// Función de actualización de los elementos en cada frame
+        /// </summary>
         private void Update() {
-            // If it's a new game, start with a countdown
+            // Si es un juego nuevo iniciamos el contador
             if (newGame) {
                 NewRound();
                 newGame = false;
             }
 
-            // Move the ball forward
+            // Actualizamos la posición de la pelota
             ball.updatePosition();
 
-            // Bounce off the side walls
+            // Comprobamos si la pelota debe rebotar
             if (ball.getPosition().Y < 0 || ball.getPosition().Y > GameCanvas.Height - Utilities.BALL_RADIUS) {
                 Utilities.Play(Utilities.Sound.Bounce);
                 ball.bounceBallVertical();
             }
 
+            // Comprobamos si han marcado algún punto los jugadores
             if(checkIfGoalOver(playerOne)) {
                 Utilities.Play(Utilities.Sound.Goal);
                 ball.resetBall(GameCanvas.Width, GameCanvas.Height);
@@ -139,7 +161,7 @@ namespace practica2 {
                 NewRound();
             }
 
-            // Check for a winner
+            // Comprobamos si hay un ganador
             if (playerOne.getScore() >= Utilities.WIN_SCORE) {
                 ToggleStart();
                 gameLabel.Content = "¡Gana Jugador 1!";
@@ -180,19 +202,24 @@ namespace practica2 {
             return false;
         }
 
+        /// <summary>
+        /// Función del contador
+        /// Decrementa el contador hasta que llega a cero y comenzamos el juego
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="e"></param>
         private void countdownTick(object o, ElapsedEventArgs e) {
-            // Decrement the countdown timer
+            // Decrementamos el contador
             countdown--;
-            // If the countdown is finished, unpuase the game and begin
+            // Si ha acabado el contador iniciamos el juego
             if (countdown == 0) {
                 gamePaused = false;
                 this.Dispatcher.Invoke((Action)(() => {
                     gameLabel.Content = "";
-                    //pauseGameButton.IsEnabled = true;
                 }));
                 newBallTimer.Stop();
             }
-            // If the countdown is still going, update the label on the screen
+            // Si aún no ha acabado el contador solo actualizamos la etiqueta
             else {
                 this.Dispatcher.Invoke((Action)(() => {
                     gameLabel.Content = countdown;
@@ -201,6 +228,12 @@ namespace practica2 {
 
         }
 
+        /// <summary>
+        /// Cierre de la ventana.
+        /// Cerramos la hebra del juego y apagamos el Kinect
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
             if (gameThread != null) {
                 gameThread.Abort();
@@ -208,10 +241,18 @@ namespace practica2 {
             }
         }
 
+        /// <summary>
+        /// Evento click del botón de Inicio del juego
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void startGameButton_Click(object sender, RoutedEventArgs e) {
             ToggleStart();
         }
 
+        /// <summary>
+        /// Función de inicialición del comienzo de un nuevo juego
+        /// </summary>
         private void ToggleStart() {
             // Iniciamos el juego en el caso de que no lo esté
             if (!gameStarted) {
@@ -238,65 +279,60 @@ namespace practica2 {
             }
         }
 
+        /// <summary>
+        /// Evento de actualización del esqueleto.
+        /// Reconoce la posición de los jugadores en cada frame y los muestra en la ventana
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SkeletonDataChanged(object sender, KinectUtilities.SkeletonDataChangeEventArgs e) {
-            // Don't update if the game hasn't started
             if (gameThread == null)
                 return;
 
-            // Determine which skeletons are on which side
+            // Comprobamos la posición de los jugadores
             Skeleton right = null;
             Skeleton left = null;
-            // Loop through all available skeletons
+
             for (int i = 0; i < e.skeletons.Length; i++) {
-                // Grab the current skeleton
                 Skeleton skel = e.skeletons[i];
-                // If we're tracked figure out what side of the screen we're on
                 if (skel.TrackingState == SkeletonTrackingState.Tracked) {
                     Point position = helper.SkeletonPointToScreen(skel.Joints[JointType.ShoulderCenter].Position);
-                    // If the skeleton is the first on the left side of the screen, it is the left skeleton
+                    
                     if ((position.X > 0 && position.X <= GameCanvas.Width / 2) && left == null)
-                        left = skel;
-                    // If the skeleton is the first on the right side of the screen, it is the right skeleton
+                        left = skel;                    
                     else if ((position.X > GameCanvas.Width / 2 && position.X < GameCanvas.Width) && right == null)
                         right = skel;
                 }
-                // If both skeletons have been found, no need to keep looking
+                
                 if (left != null & right != null)
                     break;
             }
 
-            // If the left skeleton wasn't found, hide the marker
+            // Mostramos el marcador del jugador solo en el caso de que esté jugando
             if (left == null) {
                 playerOne.setVisibility(false);
                 playerOne.isConnected = false;
-            // If the left skeleton was found, update some values
             } else {
                 playerOne.isConnected = true;
-                // Get the locations of the skeleton's head and hand
                 Point playerOneHand = helper.SkeletonPointToScreen(left.Joints[Utilities.HANDTRACK].Position);
                 Point playerOneHead = helper.SkeletonPointToScreen(left.Joints[JointType.Head].Position);
-                // Save the last position of player one's paddle
+                
                 playerOne.updatePosition(playerOneHead, playerOneHand);
             }
 
-            // If the right skeleton wasn't found, hide the marker
+            // Mostramos el marcador del jugador solo en el caso de que esté jugando
             if (right == null) {
                 playerTwo.setVisibility(false);
                 playerTwo.isConnected = false;
-                // If the right skeleton was found, update some values
             } else {
                 playerTwo.isConnected = true;
-                // Get the locations of the skeleton's head and hand
                 Point playerTwoHand = helper.SkeletonPointToScreen(right.Joints[Utilities.HANDTRACK].Position);
                 Point playerTwoHead = helper.SkeletonPointToScreen(right.Joints[JointType.Head].Position);
-                // Save the last position of player two's paddle
+                
                 playerTwo.updatePosition(playerTwoHead, playerTwoHand);
             }
-
-            // Draw the markers separately from the rest of the game
-            // TO-DO: Move this somewhere better
+            
             this.Dispatcher.Invoke((Action)(() => {
-                // Move the markers to their new positions
                 Canvas.SetLeft(playerOne.getMarkShape(), playerOne.getPlayerPosition().X);
                 Canvas.SetTop(playerOne.getMarkShape(), playerOne.getPlayerPosition().Y);
                 Canvas.SetLeft(playerTwo.getMarkShape(), playerTwo.getPlayerPosition().X);
