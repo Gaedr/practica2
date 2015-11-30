@@ -119,10 +119,12 @@ namespace practica2 {
 
             // Bounce off the side walls
             if (ball.getPosition().Y < 0 || ball.getPosition().Y > GameCanvas.Height - Utilities.BALL_RADIUS) {
+                Utilities.Play(Utilities.Sound.Bounce);
                 ball.bounceBallVertical();
             }
 
             if(checkIfGoalOver(playerOne)) {
+                Utilities.Play(Utilities.Sound.Goal);
                 ball.resetBall(GameCanvas.Width, GameCanvas.Height);
                 playerTwo.increaseScore();
                 scoreTwoLabel.Content = playerTwo.getScore().ToString();
@@ -166,6 +168,7 @@ namespace practica2 {
             if (isInRivalArea) {
                 if (ball.getPosition().Y < (rival.getPaddlePosition().Y + Utilities.PADDLE_HEIGHT + (Utilities.BALL_RADIUS / 2)) &&
                     ball.getPosition().Y > (rival.getPaddlePosition().Y - (Utilities.BALL_RADIUS / 2))) {
+                    Utilities.Play(Utilities.Sound.Bounce);
                     ball.bounceBallHorizontal(rival, GameCanvas.Height);
                 } else if(isScore){
                     return true;
@@ -262,10 +265,10 @@ namespace practica2 {
             // If the left skeleton wasn't found, hide the marker
             if (left == null) {
                 playerOne.setVisibility(false);
-                Console.WriteLine("No hay jugador 1");
+                playerOne.isConnected = false;
             // If the left skeleton was found, update some values
             } else {
-                Console.WriteLine("Jugador 1 conectado");
+                playerOne.isConnected = true;
                 // Get the locations of the skeleton's head and hand
                 Point playerOneHand = helper.SkeletonPointToScreen(left.Joints[Utilities.HANDTRACK].Position);
                 Point playerOneHead = helper.SkeletonPointToScreen(left.Joints[JointType.Head].Position);
@@ -276,11 +279,11 @@ namespace practica2 {
             // If the right skeleton wasn't found, hide the marker
             if (right == null) {
                 playerTwo.setVisibility(false);
-                Console.WriteLine("No hay jugador 2");
+                playerTwo.isConnected = false;
                 // If the right skeleton was found, update some values
             } else {
+                playerTwo.isConnected = true;
                 // Get the locations of the skeleton's head and hand
-                Console.WriteLine("Jugador 2 conectado");
                 Point playerTwoHand = helper.SkeletonPointToScreen(right.Joints[Utilities.HANDTRACK].Position);
                 Point playerTwoHead = helper.SkeletonPointToScreen(right.Joints[JointType.Head].Position);
                 // Save the last position of player two's paddle

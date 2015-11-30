@@ -3,12 +3,12 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace practica2 {
-    class Jugador{
+    class Jugador {
 
         /// <summary>
         /// Enumerador con el número de jugadores
         /// </summary>
-        public enum Side { Player1, Player2}
+        public enum Side { Player1, Player2 }
 
         /// <summary>
         /// Rectangulo que representa la barra
@@ -45,6 +45,8 @@ namespace practica2 {
         /// </summary>
         private Side side;
 
+        public bool isConnected { get; set; }
+
         /// <summary>
         /// Inicializa el Jugador a partir de su <see cref="Side"/>
         /// </summary>
@@ -79,7 +81,8 @@ namespace practica2 {
                 mark.Fill = new SolidColorBrush(Utilities.PLAYER2_COLOR);
                 shape.Fill = new SolidColorBrush(Utilities.PLAYER2_COLOR);
                 break;
-            }           
+            }
+            isConnected = false;          
         }
         
         /// <summary>
@@ -111,6 +114,7 @@ namespace practica2 {
             paddlePositionPast = paddlePosition;
             paddlePosition.Y = positionHand.Y - Utilities.PADDLE_HEIGHT / 2;
 
+            setVisibility(true);
             position.X = positionHead.X - Utilities.PLAYER_ELLIPSE_RADIUS / 2;
             position.Y = positionHead.Y - Utilities.PLAYER_ELLIPSE_RADIUS / 2;
         }
