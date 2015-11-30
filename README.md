@@ -30,13 +30,31 @@ Para el desarrollo de esta práctica se han creado una serie de clases entre las
 
 * La clase **MainWindow** se encarga de todo lo relacionado con la ventana que va a ver el usuario a la hora de jugar al pong, por lo que es la encargada de mostrar todos los componentes necesarios, asi como un marcador o si está conectado o no el Kinect. Dentro de esta clase encontramos los siguientes métodos.
 	* **MainWindow()**, este es el constructor por defecto de la clase y se escarga de inicializar los componentes, tomar los esqueletos de los jugadores para identificarlos y llama a un método que comprueba si está conectado o no el Kinect.
-	* **testKinect()** es método comprueba si el Kinect está conectado, en caso de  no estarlo muestra un mensaje por pantalla indicándolo y desactiva el botón con el que poder iniciar el juego hasta que esté conectado.
-	* **initializeGame()** en este método inicializamos un timer, establecemos un valor de cuenta atrás, establecemos los lados de en los que se situarán los jugadores, creamos la pelota, las palas de cada uno, y finalmente damos paso al método que ejecuta el juego.
-	* **NewRound()** en este método partimos de que el juego está pausado, muestra la cuenta atrás que indica el inicio del juego 
-
+	* **testKinect()** este método comprueba si el Kinect está conectado, en caso de  no estarlo muestra un mensaje por pantalla indicándolo y desactiva el botón con el que poder iniciar el juego hasta que esté conectado.
+	* **initializeGame()** en este método inicializaremos todas las variables que necesitamos, como el temporizador, los jugadores o la pelota, también añade los elementos que se mostrarán en el canvas.
+	* **NewRound()** función que establece una nueva ronda del juego, inicia el contador de comienzo del partido y pausa el partido hasta que este llegue a cero.
+	* **GameLoop** método en el que se ejecuta la hebra del juego y va actualizando todo los necesario cada frame.
+	* **Update** aquí hacemos todas las comprobaciones necesarias en cada frame, tal como ver donde se encuentra la pelota y en el caso de que haya algún elemento hacer que rebote, comprobar si se ha marcado un tanto o si algún jugador ha ganado.
+	* **checkIfGoalOver** este método comprueba si el jugador pasado por parámetro ha recibido un tanto.
+	* **ToggleStart** método que inicia el juego si está parado y lo para si está en marcha. Aquí se inicia la hebra del juego o se para.
+	* **SkeletonDataChanged** este evento es el encargado de comunicarse con la clase **KinectUtilities** para obtener el esqueleto de los jugadores. Determina quién es cada jugador y muestra el marcador del jugador en el caso de que exista.
+* La clase **KinectUtilities** es la encargada de la interacción con el Kinect, está basada en la clase que utilizamos en la práctica anterior por lo que solo se explicarán los métodos más relevantes.
+	* **initializeKinect** En este método inicializaríamos el Kinect así como todas las variables necesarias.
+	* **SkeletonDateChangedEvent** y **SkeletonDataChange** son los métodos delegados que se utilizan como evento para indicar cambios dentro del esqueleto del usuario, es decir cuando el usuario se mueve.
+	* **SensorSkeletonFrameReady** este método captura cuando se ha movido el usuario y es el encargado de disparar el evento hablado anteriormente. 
 
 ###Funcionamiento.
+El funcionamiento del juego es muy simple. Se sitúan los dos jugador frente al kinect, lo más alejados posible dentro de la cámara para no tener problemas, se pulsa el botón iniciar y el juego comienza.
+
+Los controles dentro del juego son muy fáciles de aprender, cada usuario maneja la barra con la mano derecha, al levantarla la barra sube y al bajarla, baja.
+
+Los jugadores deben de intentar golpear la pelota con la barra y pierde quien reciba más tantos.
+
+El único control que no se maneja mediante el Kinect es el botón de inicio/parada que debe de pulsarse con el ratón.
 ### Errores y aspectos destacados.
+Hemos tenido problemas al añadirlse sonidos al juego, al incluirlos se produce un delay de vez en cuando que no hemos encontrado su motivo.
+
+También ha sido complicada la manera de seleccionar los jugadores dentro del juego sin que hubiera problemas de reconocimiento, al final optamos por dividir la pantalla virtualmente en dos y escoger el jugador en función del lado de la pantalla al que pertenezca. Es por eso que se insta a los jugadores a que mantengan el mayor margen posible ya que al utilizar el Kinect v1 en ocasiones hemos encontrado el problema de que Kinect confunde los jugadores.
 
 ### Bibliografía.
 * [Curso C#: Ejercicio. Diseñar el juego Pong ](http://curso-mcts.blogspot.com.es/2011/03/ejercicio-disenar-el-juego-pong.html)
