@@ -61,6 +61,9 @@ namespace practica2 {
             GameCanvas.Children.Add(playerOne.getMarkShape());
             GameCanvas.Children.Add(playerTwo.getMarkShape());
 
+            scoreOneLabel.Content = playerOne.getScore().ToString();
+            scoreTwoLabel.Content = playerTwo.getScore().ToString();
+
             startThread();            
         }
 
