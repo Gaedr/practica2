@@ -81,11 +81,12 @@ Una vez tenemos las varibles inicializadas, procedemos a crear los puntos depend
 <ul>
 <li>
 <strong>Pelota()</strong>, es el constructor de la clase, en este se establecen valores como la forma de la pelota, con <strong>shape</strong> , la posición que va tomando en cada momento se almacena en <strong>position</strong>, mientras que en <strong>fwd</strong> almacenamos la dirección en la que se moverá la pelota. Finalmente en la variable <strong>rand</strong> almacenamos un número aleatorio que utilizaremos más adelante para varias cosas. En la segunda parte del constructor se establecerá la forma de la pelota asi como su color de la misma forma que hemos hecho antes para dibujar las barras. En este caso será de color verde con el borde blanco.</li>
-<li>*<em>updatePosition() *</em> en este método actualizamos la posición de la pelota en función de la velocidad que tiene y de su dirección.</li>
+<li>
+<strong>updatePosition()</strong> en este método actualizamos la posición de la pelota en función de la velocidad que tiene y de su dirección.</li>
 <li>
 <strong>bounceBallVertical()</strong> con este método controlamos el rebote vertical de la pelota de forma que actualizamos el valor y de la variable <strong>fwd</strong> a su valor pero en negativo. Ocurre cuando la pelota choca con los márgenes.</li>
 <li>
-<strong>bounceBallHorizontal(Jugador player, double canvasHeight) ** método con el que controlamos el rebote horizontal de la pelota, esto ocurre cuando choca contra las barras de cada jugador y es algo más complejo ya que actualiza el valor de la posicion y de **fwd</strong> a partir de la posición y del jugador y de su pala, mientras que el valor de la coordenada x de <strong>fwd</strong> se actualiza a -1 y se aumenta la velocidad.</li>
+<strong>bounceBallHorizontal(Jugador player, double canvasHeight)</strong> método con el que controlamos el rebote horizontal de la pelota, esto ocurre cuando choca contra las barras de cada jugador y es algo más complejo ya que actualiza el valor de la posicion y de <strong>fwd</strong> a partir de la posición y del jugador y de su pala, mientras que el valor de la coordenada x de <strong>fwd</strong> se actualiza a -1 y se aumenta la velocidad.</li>
 <li>
 <strong>increaseSpeed(double cant = .5)</strong> con este método nos limitamos a aumentar el valor de la velocidad a la que se mueve la pelota en 0.5.</li>
 <li>En los métodos restantes nos limitamos a acceder a las variables privadas de la clase.</li>
